@@ -1,0 +1,58 @@
+.page_sign {
+    width: 90%;
+    max-width: 370px;
+    background-color: var(--primary-100);
+    border-radius: .7rem;
+    padding: 2rem;
+    font-size: .8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, .1);
+}
+
+.page_sign > form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.page_sign > form > input {
+    width: 100%;
+    padding: 1rem .8rem;
+    outline: none;
+    background: none;
+    border: 3px solid var(--primary-200);
+    border-radius: .7rem;
+    color: white;
+}
+
+.page_sign > form > input::placeholder {
+    color: rgba(255, 255, 255, .9);
+}
+
+.page_sign > form > button {
+    width: 100%;
+    padding: 1rem .8rem;
+    border: none;
+    background-color: var(--primary-200);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, .1);
+    border-radius: .7rem;
+    cursor: pointer;
+    transition: .2s;
+    color: white;
+}
+
+.page_sign > form > button:hover {
+    transform: scale(1.025);
+}
+
+.page_sign > a {
+    text-decoration: none;
+    font-weight: 500;
+}

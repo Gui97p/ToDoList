@@ -1,0 +1,12 @@
+.app {
+    background-color: var(--bg-200);
+    padding-top: 3rem;
+}
+
+.app > .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 5rem;
+}

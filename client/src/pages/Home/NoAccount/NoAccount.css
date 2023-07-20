@@ -1,0 +1,48 @@
+.noaccount {
+    width: 90%;
+    max-width: 370px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+
+    background-color: var(--primary-100);
+    border-radius: .7rem;
+    padding: 2rem;
+    font-size: .8rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, .1);
+}
+
+.noaccount > .buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 20px;
+}
+
+.noaccount > .buttons > a {
+    width: 100%;
+    height: 3rem;
+    background-color: var(--primary-200);
+    border-radius: .3rem;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, .1);
+    text-transform: uppercase;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .2s;
+}
+
+.noaccount > .buttons > a:hover {
+    transform: scale(1.05);
+}
+
+@media screen and (max-width: 375px) {
+    .noaccount > .buttons {
+        flex-direction: column;
+    }
+}
