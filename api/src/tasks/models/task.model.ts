@@ -11,7 +11,8 @@ export const TaskSchema = new Schema({
     },
     user: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: 'User'
     },
     createdAt: {
         type: Date,

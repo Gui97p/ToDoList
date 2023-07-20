@@ -14,6 +14,15 @@ export class TasksController {
         return await this.tasksService.findAll();
     }
 
+    @Get('user')
+    async findByUser(@Req() req: Request) {
+        const userId: string | Schema.Types.ObjectId = req['userId'];
+
+        const tasks = await this.tasksService.findByUser(userId);
+
+        return tasks;
+    }
+
     @Get(':id')
     async findById(@Param('id') id: string) {
         return await this.tasksService.findById(id);
