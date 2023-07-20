@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Task } from './interfaces/task.interface';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class TasksService {
@@ -10,8 +10,25 @@ export class TasksService {
         return this.taskModel.find();
     }
 
-    create(body: any) {
-        return this.taskModel.create(body);
+    findById(id: string) {
+        return this.taskModel.findById(id);
+    }
+
+    create(id: Types.ObjectId | string, body: any) {
+        const doc = {
+            title: body.title,
+            description: body.description,
+            user: id
+        }
+
+        return this.taskModel.create(doc);
+    }
+
+    update(id: Types.ObjectId | string, body: any) {
+        return this.taskModel.findByIdAndUpdate(id, body);
+    }
+
+    remove(id: Types.ObjectId | string) {
+        return this.taskModel.findByIdAndDelete(id);
     }
 }
-

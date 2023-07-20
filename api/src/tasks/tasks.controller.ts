@@ -1,6 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UnauthorizedException } from '@nestjs/common';
 import { CreateTaskDto } from './dtos/create-task.dto';
 import { TasksService } from './tasks.service';
+import { Request } from 'express';
+import { UpdateTaskDto } from './dtos/update-task.dto';
+import { Schema } from 'mongoose';
 
 @Controller('tasks')
 export class TasksController {
@@ -8,13 +11,63 @@ export class TasksController {
 
     @Get()
     async findAll() {
-        return this.tasksService.findAll();
+        return await this.tasksService.findAll();
+    }
+
+    @Get(':id')
+    async findById(@Param('id') id: string) {
+        return await this.tasksService.findById(id);
     }
 
     @Post()
-    async create(@Body() body: CreateTaskDto) {
-        const newTask = await this.tasksService.create(body);
+    async create(@Body() body: CreateTaskDto, @Req() req: Request) {
+        const userId = req["userId"];
+        const newTask = await this.tasksService.create(userId, body);
         
         return newTask;
+    }
+
+    @Patch(':id')
+    async update(@Param('id') id: string, @Body() body: UpdateTaskDto, @Req() req: Request) {
+        const userId: string | Schema.Types.ObjectId = req['userId'];
+        const isAdmin: boolean = req['isAdmin'];
+
+        const task = await this.tasksService.findById(id);
+
+        if (!task) {
+            throw new BadRequestException('Task with the given ID not found');
+        }
+
+        if (String(userId) !== String(task['user'])) {
+            if (!isAdmin) {
+                throw new UnauthorizedException();
+            }
+        }
+
+        await this.tasksService.update(id, body);
+
+        return {
+            message: 'Task successfully updated'
+        };
+    }
+
+    @Delete(':id')
+    async remove(@Param('id') id: string, @Req() req: Request) {
+        const userId: string | Schema.Types.ObjectId = req['userId'];
+        const isAdmin: boolean = req['isAdmin'];
+
+        const task = await this.tasksService.findById(id);
+
+        if (String(userId) !== String(task['user'])) {
+            if (!isAdmin) {
+                throw new UnauthorizedException();
+            }
+        }
+
+        await this.tasksService.remove(id);
+
+        return {
+            message: 'Task successfully deleted'
+        };
     }
 }

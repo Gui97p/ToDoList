@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { usersProviders } from './users.provider';
 import { DatabaseModule } from 'src/database/database.module';
+import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 
 @Module({
     imports: [DatabaseModule],
@@ -10,4 +11,13 @@ import { DatabaseModule } from 'src/database/database.module';
     providers: [UsersService, ...usersProviders],
     exports: [UsersService]
 })
-export class UsersModule {}
+export class UsersModule {
+    configure(consumer: MiddlewareConsumer) {        
+        consumer
+            .apply(AuthMiddleware)
+            .forRoutes(
+                {path: 'users/:id', method: RequestMethod.PATCH},
+                {path: 'users/:id', method: RequestMethod.DELETE}
+            );
+    }
+}

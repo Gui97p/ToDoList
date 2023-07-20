@@ -7,7 +7,7 @@ config();
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-    constructor(private readonly userService: UsersService) {}
+    constructor(private readonly userService: UsersService) { }
 
     use(req: Request, res: Response, next: NextFunction) {
         const { authorization } = req.headers;
@@ -28,18 +28,26 @@ export class AuthMiddleware implements NestMiddleware {
             throw new UnauthorizedException();
         }
 
-        verify(token, process.env.JWT_SECRET, async (error, decoded) => {
-            if (error) {
-                throw new UnauthorizedException('Token invalid or expired')
+
+        let error = false
+        verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+            if (err) {
+                error = true;
+                return;
             }
 
             const user = await this.userService.findById(decoded['id']);
 
             if (!user || !user._id) {
-                throw new UnauthorizedException('Invalid token')
+                error = true;
+                return;
             }
+
+            req["userId"] = user._id;
+            req["isAdmin"] = user['isAdmin'];
 
             next();
         });
+        if (error) { throw new UnauthorizedException('Token invalid or expired') }
     }
 }
