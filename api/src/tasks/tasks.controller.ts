@@ -4,7 +4,9 @@ import { TasksService } from './tasks.service';
 import { Request } from 'express';
 import { UpdateTaskDto } from './dtos/update-task.dto';
 import { Schema } from 'mongoose';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('tasks')
 export class TasksController {
     constructor(private readonly tasksService: TasksService) {}

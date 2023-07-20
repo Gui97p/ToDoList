@@ -7,6 +7,7 @@ import { sign } from 'jsonwebtoken';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Request } from 'express';
 import { Schema } from 'mongoose';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -47,6 +48,7 @@ export class UsersController {
         return { token };
     }
 
+    @ApiBearerAuth()
     @Patch(':id')
     async update(@Param('id') id: string, @Body() body: UpdateUserDto, @Req() req: Request) {
         const userId: string | Schema.Types.ObjectId = req['userId'];
@@ -65,6 +67,7 @@ export class UsersController {
         }
     }
 
+    @ApiBearerAuth()
     @Delete(':id')
     async remove(@Param('id') id: string, @Req() req: Request) {
         const userId: string | Schema.Types.ObjectId = req['userId'];
