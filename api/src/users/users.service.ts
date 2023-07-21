@@ -52,8 +52,4 @@ export class UsersService {
     remove(id: string | Schema.Types.ObjectId) {
         return this.userModel.findByIdAndDelete(id);
     }
-
-    genToken(id: string) {
-        return sign({id}, process.env.JWT_SECRET, { expiresIn: 604800 });
-    }
 }
