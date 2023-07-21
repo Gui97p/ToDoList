@@ -12,7 +12,15 @@ export class TasksController {
     constructor(private readonly tasksService: TasksService) {}
 
     @Get()
-    async findAll() {
+    async findAll(@Req() req: Request) {
+        const isAdmin: boolean = req['isAdmin'];
+
+        if (!isAdmin) {
+            throw new UnauthorizedException({
+                message: "Only admins can access this route"
+            });
+        }
+
         return await this.tasksService.findAll();
     }
 

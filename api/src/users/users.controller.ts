@@ -3,7 +3,6 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { LoginDto } from './dtos/login.dto';
 import { compare } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Request } from 'express';
 import { Schema } from 'mongoose';
@@ -13,8 +12,17 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
 
+    @ApiBearerAuth()
     @Get()
-    async findAll() {
+    async findAll(@Req() req: Request) {
+        const isAdmin: boolean = req['isAdmin'];
+
+        if (!isAdmin) {
+            throw new UnauthorizedException({
+                message: "Only admins can access this route"
+            });
+        }
+
         return await this.usersService.findAll();
     }
 
@@ -43,7 +51,7 @@ export class UsersController {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const token = sign({id: user._id}, process.env.JWT_SECRET, { expiresIn: 3600/*604800*/ });
+        const token = this.usersService.genToken(user._id);
 
         return { token };
     }

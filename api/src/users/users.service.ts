@@ -1,7 +1,10 @@
+import { sign } from 'jsonwebtoken';
 import { HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Model, Schema } from 'mongoose';
 import { User } from './interfaces/user.interface';
 import { hash } from 'bcrypt';
+import { config } from 'dotenv';
+config();
 
 @Injectable()
 export class UsersService {
@@ -19,19 +22,23 @@ export class UsersService {
         return this.userModel.findOne({ email }).select('+password');
     }
 
-    create(body: any) {
-        return this.userModel.create(body)
-            .catch(err => {
-                switch (err.code) {
-                    case 11000:
-                        throw new HttpException('This email already exists', HttpStatus.BAD_REQUEST);
-                        break;
+    async create(body: any) {
+        try {
+           var user: {password: string} = (await this.userModel.create(body)).toObject();
+           delete user['password'];
+           return user;
+            
+        } catch (err) {
+            switch (err.code) {
+                case 11000:
+                    throw new HttpException('This email already exists', HttpStatus.BAD_REQUEST);
+                    break;
 
-                    default:
-                        throw new InternalServerErrorException(err.message);
-                        break;
-                }
-            });
+                default:
+                    throw new InternalServerErrorException(err.message);
+                    break;
+            }
+        }
     }
 
     async update(id: string | Schema.Types.ObjectId, body: any) {
@@ -44,5 +51,9 @@ export class UsersService {
 
     remove(id: string | Schema.Types.ObjectId) {
         return this.userModel.findByIdAndDelete(id);
+    }
+
+    genToken(id: string) {
+        return sign({id}, process.env.JWT_SECRET, { expiresIn: 604800 });
     }
 }

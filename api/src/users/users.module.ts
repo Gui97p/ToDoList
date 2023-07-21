@@ -16,6 +16,7 @@ export class UsersModule {
         consumer
             .apply(AuthMiddleware)
             .forRoutes(
+                {path: 'users', method: RequestMethod.GET},
                 {path: 'users/:id', method: RequestMethod.PATCH},
                 {path: 'users/:id', method: RequestMethod.DELETE}
             );
