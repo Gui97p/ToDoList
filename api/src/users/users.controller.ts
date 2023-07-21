@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UnauthorizedException, Param, Patch, Req, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { LoginDto } from './dtos/login.dto';
+import { LoginDto } from '../auth/dtos/login.dto';
 import { compare } from 'bcrypt';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Request } from 'express';
@@ -34,26 +34,6 @@ export class UsersController {
     @Post()
     async create(@Body() body: CreateUserDto) {
         return this.usersService.create(body);
-    }
-
-    @Post('auth')
-    async login(@Body() body: LoginDto) {
-        const { email, password } = body;
-        const user = await this.usersService.findByEmail(email);
-
-        if (!user) {
-            throw new UnauthorizedException({ message: 'Invalid credentials' });
-        }
-
-        const passwordMatch = await compare(password, user.password);
-
-        if (!passwordMatch) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
-
-        const token = this.usersService.genToken(user._id);
-
-        return { token };
     }
 
     @ApiBearerAuth()

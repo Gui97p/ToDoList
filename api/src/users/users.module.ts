@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { usersProviders } from './users.provider';
 import { DatabaseModule } from 'src/database/database.module';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
+import { IdMiddleware } from 'src/middlewares/id.middleware';
 
 @Module({
     imports: [DatabaseModule],
@@ -17,6 +18,14 @@ export class UsersModule {
             .apply(AuthMiddleware)
             .forRoutes(
                 {path: 'users', method: RequestMethod.GET},
+                {path: 'users/:id', method: RequestMethod.PATCH},
+                {path: 'users/:id', method: RequestMethod.DELETE}
+            );
+        
+        consumer
+            .apply(IdMiddleware)
+            .forRoutes(
+                {path: 'users/:id', method: RequestMethod.GET},
                 {path: 'users/:id', method: RequestMethod.PATCH},
                 {path: 'users/:id', method: RequestMethod.DELETE}
             );
